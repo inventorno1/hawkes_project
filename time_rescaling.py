@@ -17,16 +17,12 @@ def integrate_conditional_intensity_vectorised(t_start, t_end, events_list, back
 
     return integral_value
 
-
-hawkes_realisation = sample_hawkes_process_thinning(1000, constant_background, exp_kernel)
-taus_list = []
-hawkes_realisation_plus_zero = [0] + hawkes_realisation
-for i in range(len(hawkes_realisation)):
-  start = hawkes_realisation_plus_zero[i]
-  end = hawkes_realisation_plus_zero[i+1]
-  tau = integrate_conditional_intensity_vectorised(start, end, hawkes_realisation, constant_background, exp_kernel_vectorised)
-  taus_list.append(tau)
-
-z_list = [(1 - np.exp(-tau)) for tau in taus_list]
-
-plt.hist(z_list, bins=10, density=True)
+def rescale_times(hawkes_realisation):
+    taus_list = []
+    hawkes_realisation_plus_zero = [0] + hawkes_realisation
+    for i in range(len(hawkes_realisation)):
+        start = hawkes_realisation_plus_zero[i]
+        end = hawkes_realisation_plus_zero[i+1]
+        tau = integrate_conditional_intensity_vectorised(start, end, hawkes_realisation, constant_background, exp_kernel_vectorised)
+        taus_list.append(tau)
+    return taus_list

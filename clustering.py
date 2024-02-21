@@ -5,43 +5,35 @@ import scipy
 from utils import exp_kernel, exp_kernel_vectorised
 
 # Simulate homogeneous Poisson process - interarrival times are Exponential
-T_list = []
-mu = 10
-rng = np.random.default_rng()
-max_T = 100
-latest_T = 0
-while latest_T < max_T:
-  interarrival_time = rng.exponential(mu)
-  latest_T += interarrival_time
-  if latest_T < max_T:
-    T_list.append(latest_T)
-
-plt.scatter(T_list, len(T_list)*[0])
+def simulate_homogeneous_poisson_process(mu, max_T):
+    T_list = []
+    rng = np.random.default_rng()
+    latest_T = 0
+    while latest_T < max_T:
+        interarrival_time = rng.exponential(mu)
+        latest_T += interarrival_time
+        if latest_T < max_T:
+            T_list.append(latest_T)
+    return T_list
 
 
 # Simulate inhomogeneous Poisson process - need to use accept-reject method
-T_list = []
-rate = lambda t: exp_kernel(t-20, alpha=0.5, delta=0.05)
-# rate = lambda t: exp_kernel(t)
-rng = np.random.default_rng()
-max_T = 100
-s = 20
-lambda_bar = rate(20)
-while s < max_T:
-  u1 = rng.uniform()
-  w = -np.log(u1)/lambda_bar
-  s += w
-  D = rng.uniform()
-  if D <= rate(s)/lambda_bar:
-    latest_T = s
-    if latest_T < max_T:
-      T_list.append(latest_T)
+def simulate_inhomogeneous_poisson_process(rate, max_T, s):
+    T_list = []
+    
+    rng = np.random.default_rng()
+    lambda_bar = rate(s)
+    while s < max_T:
+        u1 = rng.uniform()
+        w = -np.log(u1)/lambda_bar
+        s += w
+        D = rng.uniform() 
+        if D <= rate(s)/lambda_bar:
+            latest_T = s
+            if latest_T < max_T:
+                T_list.append(latest_T)
 
-plt.scatter(T_list, len(T_list)*[0])
-x_points = np.linspace(0, 100, 1000)
-plt.plot(x_points, [rate(x) for x in x_points])
-plt.xlim(0, 100)
-plt.show()
+    return T_list
 
 
 def simulate_immigrants(max_T):
@@ -104,21 +96,21 @@ def sample_hawkes_process_clustering(max_T):
     clusters[i] = cluster
   return clusters
 
-clusters = sample_hawkes_process_clustering(100)
+# clusters = sample_hawkes_process_clustering(100)
 
-# Generate unique colors for each immigrant
-colors = plt.cm.rainbow(np.linspace(0, 1, len(clusters)))
+# # Generate unique colors for each immigrant
+# colors = plt.cm.rainbow(np.linspace(0, 1, len(clusters)))
 
-counter = 0
+# counter = 0
 
-for i in range(len(clusters)):
-  cluster = clusters[i]
-  color = colors[i]
-  counter += 1
-  plt.scatter(cluster[0], 0, color=color)
-  for generation, events in cluster.items():
-    for event in events:
-      counter += 1
-      plt.scatter(event, generation, color=color)
+# for i in range(len(clusters)):
+#   cluster = clusters[i]
+#   color = colors[i]
+#   counter += 1
+#   plt.scatter(cluster[0], 0, color=color)
+#   for generation, events in cluster.items():
+#     for event in events:
+#       counter += 1
+#       plt.scatter(event, generation, color=color)
 
-print(counter)
+# print(counter)

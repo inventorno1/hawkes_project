@@ -42,8 +42,6 @@ def exp_kernel_vectorised(t, alpha=1, delta=2):
 def constant_background(t):
   return 1
 
-
-
 def conditional_intensity(t, events_list, background_intensity, memory_kernel):
   sum = 0
   for T in events_list:

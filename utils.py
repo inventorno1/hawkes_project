@@ -61,14 +61,16 @@ def conditional_intensity_vectorised(t_values, events_list, background_intensity
     return result
 
 def conditional_intensity_true_vectorised(t_vals, events_list, background_intensity, memory_kernel):
-  num_events = len(events_list)
-  if isinstance(t_vals, float) or isinstance(t_vals, int):
-     num_t_vals = 1
-  else:
-     num_t_vals = len(t_vals)
+
+  t_vals = np.atleast_1d(t_vals)
+
   events_list = np.array(events_list)
-  events_list = events_list[np.newaxis, :] # Make events_list a row vector
-  t_vals = t_vals[:, np.newaxis] # Make t_vals a column vector
+
+  events_list = events_list[:, np.newaxis]
+  t_vals = t_vals[np.newaxis, :]
+
+  input_mat = events_list - t_vals
+
   print(events_list)
   print(t_vals)
 
@@ -80,7 +82,7 @@ def conditional_intensity_true_vectorised(t_vals, events_list, background_intens
   kernel_mat = memory_kernel(input_mat)
   print(kernel_mat)
 
-  summed_kernel_vals = np.nansum(kernel_mat, axis=1)
+  summed_kernel_vals = np.nansum(kernel_mat, axis=0)
   print(summed_kernel_vals)
 
   background_vals = np.squeeze(background_intensity(t_vals))

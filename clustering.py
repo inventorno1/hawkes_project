@@ -10,7 +10,7 @@ def simulate_homogeneous_poisson_process(mu, max_T):
     rng = np.random.default_rng()
     latest_T = 0
     while latest_T < max_T:
-        interarrival_time = rng.exponential(mu)
+        interarrival_time = rng.exponential(1/mu)
         latest_T += interarrival_time
         if latest_T < max_T:
             T_list.append(latest_T)
@@ -96,21 +96,19 @@ def sample_hawkes_process_clustering(max_T):
     clusters[i] = cluster
   return clusters
 
-# clusters = sample_hawkes_process_clustering(100)
+def cluster_plot(clusters):
+  # Generate unique colors for each immigrant
+  colors = plt.cm.rainbow(np.linspace(0, 1, len(clusters)))
 
-# # Generate unique colors for each immigrant
-# colors = plt.cm.rainbow(np.linspace(0, 1, len(clusters)))
+  counter = 0
 
-# counter = 0
+  for i in range(len(clusters)):
+    cluster = clusters[i]
+    color = colors[i]
+    plt.scatter(cluster[0], 0, color=color)
+    for generation, events in cluster.items():
+      for event in events:
+        counter += 1 # Should only be incrementing counter here!
+        plt.scatter(event, generation, color=color)
 
-# for i in range(len(clusters)):
-#   cluster = clusters[i]
-#   color = colors[i]
-#   counter += 1
-#   plt.scatter(cluster[0], 0, color=color)
-#   for generation, events in cluster.items():
-#     for event in events:
-#       counter += 1
-#       plt.scatter(event, generation, color=color)
-
-# print(counter)
+  print(counter)

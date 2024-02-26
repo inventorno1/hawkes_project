@@ -71,21 +71,13 @@ def conditional_intensity_true_vectorised(t_vals, events_list, background_intens
 
   input_mat = events_list - t_vals
 
-  print(events_list)
-  print(t_vals)
-
   input_mat = t_vals - events_list
-  print(input_mat)
   input_mat = np.where(input_mat >= 0, input_mat, np.nan)
-  print(input_mat)
 
   kernel_mat = memory_kernel(input_mat)
-  print(kernel_mat)
 
   summed_kernel_vals = np.nansum(kernel_mat, axis=0)
-  print(summed_kernel_vals)
 
   background_vals = np.squeeze(background_intensity(t_vals))
-  print(background_vals)
 
   return summed_kernel_vals + background_vals

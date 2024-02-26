@@ -44,14 +44,15 @@ def sample_hawkes_process_thinning_true_vectorised(T_max, background_intensity, 
 
   T = 0
   events_list = []
+  rng = np.random.default_rng()
 
   while T < T_max:
-    lambda_star = conditional_intensity_true_vectorised(T, events_list, constant_background, exp_kernel_vectorised)
-    u = np.random.uniform()
+    lambda_star = conditional_intensity_true_vectorised(T, events_list, background_intensity, memory_kernel)[0]
+    u = rng.uniform()
     tau = -np.log(u)/lambda_star
     T += tau
-    s = np.random.uniform()
-    lambda_T = conditional_intensity_true_vectorised(T, events_list, constant_background, exp_kernel_vectorised)
+    s = rng.uniform()
+    lambda_T = conditional_intensity_true_vectorised(T, events_list, background_intensity, memory_kernel)[0]
     if s <= lambda_T/lambda_star:
       events_list.append(T)
 

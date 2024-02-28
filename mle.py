@@ -24,8 +24,6 @@ def log_likelihood(params, data):
 
   first = mu*max_T - (alpha/delta) * np.sum(summands)
   
-  print(first)
-  
   # second term
 
   differences_mat = np.tril(events_list.T - events_list)
@@ -35,7 +33,7 @@ def log_likelihood(params, data):
   # IMPORTANT - should k=0 or -1 here?
   # Think -1 otherwise you include differences of each arrival between itself
 
-  term_inside_log = mu + np.sum(inner_sum_mat, axis=1)
+  term_inside_log = mu + alpha*np.sum(inner_sum_mat, axis=1)
 
   second_sum_terms = np.log(term_inside_log)
 

@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
+from scipy.optimize import minimize
 
 from utils import exp_kernel_vectorised, conditional_intensity_true_vectorised
 
 # vectorised log_likelihood function for constant background
 
 def log_likelihood(params, data):
+  """Computes log-likelihood for constant background, exponential kernel model"""
 
   mu, alpha, delta = params
   events_list, max_T = data
@@ -41,7 +43,37 @@ def log_likelihood(params, data):
 
   return -first + second
 
-# OLD likelihood function
+def optimise_params_general(neg_log_likelihood_function, initial_guess, epsilon):
+  
+  bounds = [(epsilon, None), (epsilon, None), (epsilon, None)]
+
+  result = minimize(neg_log_likelihood_function, initial_guess, bounds=bounds)
+
+  optimised_parameters = result.x
+
+  return optimised_parameters, result
+
+def sum_log_likelihood(params, data):
+
+    hawkes_realisations, max_T = data
+
+    temp = 0
+    for events_list in hawkes_realisations:
+        temp += log_likelihood(params, (events_list, max_T))
+
+    return temp
+
+def optimise_params(data, initial_guess, epsilon):
+  
+  bounds = [(epsilon, None), (epsilon, None), (epsilon, None)]
+
+  result = minimize(lambda params: -log_likelihood(params, data=data), initial_guess, bounds=bounds)
+
+  optimised_parameters = result.x
+
+  return optimised_parameters, result
+
+# OLD likelihood function - WRONG
 def old_log_likelihood(params, data):
 
   mu, alpha, delta = params

@@ -81,3 +81,16 @@ def conditional_intensity_true_vectorised(t_vals, events_list, background_intens
   background_vals = np.squeeze(background_intensity(t_vals))
 
   return summed_kernel_vals + background_vals
+
+# WORK IN PROGRESS
+def plot_trace(draws_df, param_string, warmup, num_chains=2):
+  plt.figure()
+  if warmup is not None:
+    plt.axvspan(xmin=0, xmax=warmup, color='gray', alpha=0.3, label='warmup')
+  plt.title(f"Trace plot for {param_string}")
+  plot_input_data = np.array([draws_df[draws_df['chain__'] == float(i)][param_string].values for i in range(num_chains)])
+  plot_labels = ["chain {i}" for i in range(num_chains)]
+  plt.plot(plot_input_data, labels=plot_labels)
+  plt.legend()
+  plt.show()
+  return None

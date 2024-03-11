@@ -40,11 +40,11 @@ def sample_hawkes_process_thinning_vectorised(T_max, background_intensity, memor
 
   return events_list
 
-def sample_hawkes_process_thinning_true_vectorised(T_max, background_intensity, memory_kernel):
+def sample_hawkes_process_thinning_true_vectorised(T_max, background_intensity, memory_kernel, seed=None):
 
   T = 0
   events_list = []
-  rng = np.random.default_rng()
+  rng = np.random.default_rng(seed=seed)
 
   while T < T_max:
     lambda_star = conditional_intensity_true_vectorised(T, events_list, background_intensity, memory_kernel)[0]

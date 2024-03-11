@@ -9,8 +9,10 @@ from utils import exp_kernel_vectorised, constant_background, plot_trace
 stan_file = os.path.join('.', 'simple_exp_hawkes.stan')
 model_compiled = CmdStanModel(stan_file=stan_file)
 
+hawkes_seed=244659525681607163626346801839259531332
+
 max_T = 100
-hawkes_realisation = sample_hawkes_process_thinning_true_vectorised(max_T, constant_background, exp_kernel_vectorised)
+hawkes_realisation = sample_hawkes_process_thinning_true_vectorised(max_T, constant_background, exp_kernel_vectorised, seed=hawkes_seed)
 N = len(hawkes_realisation)
 
 data = {

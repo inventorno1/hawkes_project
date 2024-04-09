@@ -91,3 +91,7 @@ model {
 
     target += log_likelihood(mu, alpha, delta, events_list, N, max_T);
 }
+
+generated quantities {
+    real hawkes_log_likeliood = log_likelihood(mu, alpha, delta, events_list, N, max_T);
+}

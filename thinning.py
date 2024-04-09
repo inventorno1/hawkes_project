@@ -56,4 +56,8 @@ def sample_hawkes_process_thinning_true_vectorised(T_max, background_intensity, 
     if s <= lambda_T/lambda_star:
       events_list.append(T)
 
+  # Check if final event exceeds T_max since not checked by while loop
+  if T > T_max:
+    events_list.pop()
+
   return events_list

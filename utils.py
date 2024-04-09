@@ -22,9 +22,9 @@ def plot_counting_process(arrival_times):
     plt.step(arrival_times, counting_process, where='post')
 
     # Add labels and title
-    plt.xlabel('Time')
-    plt.ylabel('Counting Process')
-    plt.title('Counting Process Plot')
+    plt.xlabel('Time $t$')
+    plt.ylabel('$N_t$')
+    #plt.title('Counting Process Plot')
 
     # Show the plot
     plt.show()

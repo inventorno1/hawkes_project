@@ -49,12 +49,13 @@ functions {
         // first term
 
         vector[N] differences_from_max_T = max_T - events_list;
-        vector[N] summands = exp(-delta * differences_from_max_T) - 1;
+        vector[N] summands = exp(-delta * differences_from_max_T);
 
-        vector[N] within_max_T_Mask = non_negative_mask(differences_from_max_T);
-        summands = summands .* within_max_T_Mask;
+        // Assume max_T is larger than any given event time
+        // vector[N] within_max_T_Mask = non_negative_mask(differences_from_max_T);
+        // summands = summands .* within_max_T_Mask;
 
-        real first = mu * max_T - (alpha / delta) * sum(summands);
+        real first = mu * max_T - (alpha / delta) * (sum(summands) - N);
 
         // second term
 
@@ -94,5 +95,5 @@ model {
 
 // Comment/uncomment below as needed
 generated quantities {
-    real hawkes_log_likelihood = log_likelihood(mu, alpha, delta, events_list, N, max_T);
+   real hawkes_log_likelihood = log_likelihood(mu, alpha, delta, events_list, N, max_T);
 }

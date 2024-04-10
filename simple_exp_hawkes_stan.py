@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 from thinning import sample_hawkes_process_thinning_true_vectorised
 from utils import exp_kernel_vectorised, constant_background, plot_trace
 
+import cmdstanpy
+# cmdstanpy.install_cmdstan()
+cmdstanpy.install_cmdstan(compiler=True)  # only valid on Windows
+
 stan_file = os.path.join('.', 'simple_exp_hawkes.stan')
 model_compiled = CmdStanModel(stan_file=stan_file)
 

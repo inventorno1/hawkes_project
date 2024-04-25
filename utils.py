@@ -107,7 +107,7 @@ def get_axs_temp_2d(axs, i, j, n, m):
     else:
         return axs[i, j]
 
-def trace_plots(fits, params, warmup=None, chains=2, legend_height=1.02):
+def trace_plots(fits, params, warmup=None, chains=2, legend_height=-0.01):
     n = len(fits)
     m = len(params)
     
@@ -118,27 +118,31 @@ def trace_plots(fits, params, warmup=None, chains=2, legend_height=1.02):
         for j in range(m):
             for k in range(1, chains+1):
                 axs_temp = get_axs_temp_2d(axs, i, j, n, m)
-                axs_temp.plot(df[df['chain__']==k][params[j]].values, label=k)
+                axs_temp.plot(df[df['chain__']==k][params[j]].values, label=f"Chain {k}")
             if warmup:
-                axs_temp.axvspan(xmin=0, xmax=warmup, color='gray', alpha=0.3, label='warmup')
+                axs_temp.axvspan(xmin=0, xmax=warmup, color='gray', alpha=0.3, label='Warm-up')
             #axs[i, j].legend()
             max_y[j] = max(max(df[df['chain__']==k][params[j]].values), max_y[j])
             if i==0:
                 axs_temp.set_title(params[j])
+                # axs_temp.set_title(f"$\\{params[j]}$")
 
     for i in range(n):
         for j in range(m):
             axs_temp = get_axs_temp_2d(axs, i, j, n, m)
             axs_temp.set_ylim(0, max_y[j])
+            axs_temp.set_xlabel('Iteration')
+            axs_temp.set_ylabel('Value')
+            axs_temp.set_xlim(0, 1000)
 
     an_axs = get_axs_temp_2d(axs, 0, 0, n, m)
     handles, labels = an_axs.get_legend_handles_labels()
-    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, legend_height), ncol=m)
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.52, legend_height), ncol=m)
     
     plt.tight_layout()
     plt.show()
     
-def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_height=1.02):
+def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_height=-0.01):
     n = len(fits)
     m = len(params)
     fig, axs = plt.subplots(nrows=n, ncols=m, figsize=(5*m, 3*n))
@@ -157,6 +161,8 @@ def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_
             with warnings.catch_warnings():
                 warnings.simplefilter(action='ignore', category=FutureWarning)
                 sns.kdeplot(data, color='blue', ax=axs_temp, label='Posterior KDE')  # Overlay KDE plot on histogram
+
+            axs_temp.set_xlabel('Value')
 
             credible_interval = stats.mstats.mquantiles(data, [0.025, 0.975])
             axs_temp.axvspan(xmin=credible_interval[0], xmax=credible_interval[1], color='green', alpha=0.2, label='95% CI')
@@ -184,7 +190,7 @@ def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_
                 axs_temp.plot(x_values, prior_values, color='red', linestyle='--', label='Prior')
                 
     handles, labels = get_axs_temp_2d(axs, 0, 0, n, m).get_legend_handles_labels()
-    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, legend_height), ncol=m)
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.52, legend_height), ncol=m)
     
     plt.tight_layout()
     plt.show()
@@ -195,12 +201,11 @@ def get_axs_temp_1d(axs, j, m):
     else:
         return axs[j]
     
-def posterior_kdes_overlaid(fits, params, prior_functions=None, xlims=None, legend_height=1.20):
+def posterior_kdes_overlaid(fits, params, prior_functions=None, xlims=None, legend_height=-0.01):
     n = len(fits)
     m = len(params)
     fig, axs = plt.subplots(nrows=1, ncols=m, figsize=(5*m, 3))
     max_x = np.zeros(m)
-
 
 
     for i in range(n):
@@ -213,6 +218,8 @@ def posterior_kdes_overlaid(fits, params, prior_functions=None, xlims=None, lege
             with warnings.catch_warnings():
                 warnings.simplefilter(action='ignore', category=FutureWarning)
                 sns.kdeplot(data, ax=axs_temp, alpha=0.5)
+                
+            axs_temp.set_xlabel('Value')
 
             if i == 0:
                 axs_temp.set_title(params[j])
@@ -233,12 +240,12 @@ def posterior_kdes_overlaid(fits, params, prior_functions=None, xlims=None, lege
             axs_temp.plot(x_values, prior_values, color='red', linestyle='--', label='Prior')  # Overlay prior distribution
 
         handles, labels = get_axs_temp_1d(axs, 0, m).get_legend_handles_labels()
-        fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, legend_height), ncol=m)
+        fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.52, legend_height), ncol=m)
     
     plt.tight_layout()
     plt.show()
     
-def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=None, legend_height=1.20):
+def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=None, legend_height=-0.01):
     n = len(fits)
     m = len(params)
     fig, axs = plt.subplots(nrows=1, ncols=m, figsize=(5*m, 3))
@@ -260,7 +267,6 @@ def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=
                 color_temp = 'green'
             else:
                 color_temp = 'red'
-            
 
             axs_temp.scatter(mean, i, color=color_temp)
             axs_temp.plot(credible_interval, [i, i], color=color_temp, linestyle='-', linewidth=2, marker='|')
@@ -280,12 +286,18 @@ def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=
         axs_temp.axvline(true_params[j], color='black', linestyle='--', label='True parameter value')
         axs_temp.invert_yaxis()
         axs_temp.set_title(params[j])  # Set title for the first row of subplots
+        axs_temp.set_xlabel('Values')
+        if n == 1:
+            axs_temp.set_yticks([])
+        else:
+            axs_temp.set_yticks(np.arange(n))
+            axs_temp.set_ylabel('Realisation')
         if xlims:
             if xlims[j]:
                 axs_temp.set_xlim(0, max_x[j])
 
     handles, labels = axs_temp.get_legend_handles_labels()
-    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, legend_height), ncol=m)
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.52, legend_height), ncol=m)
     
     plt.tight_layout()
     plt.show()

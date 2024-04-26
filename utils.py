@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import warnings
 import seaborn as sns
+from datetime import datetime
+import pandas as pd
 
 def plot_counting_process(arrival_times):
     """
@@ -245,12 +247,18 @@ def posterior_kdes_overlaid(fits, params, prior_functions=None, xlims=None, lege
     plt.tight_layout()
     plt.show()
     
-def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=None, legend_height=-0.01):
+def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=None, legend_height=-0.01, yticks=None):
     n = len(fits)
     m = len(params)
     fig, axs = plt.subplots(nrows=1, ncols=m, figsize=(5*m, 3))
     max_x = np.zeros(m)
     max_y = np.zeros(m)
+    
+    if yticks is None:
+        if n==1:
+            yticks = []
+        else:
+            yticks = np.arange(n)
 
     data = np.zeros((n, m, 1500))
 
@@ -287,10 +295,8 @@ def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=
         axs_temp.invert_yaxis()
         axs_temp.set_title(params[j])  # Set title for the first row of subplots
         axs_temp.set_xlabel('Values')
-        if n == 1:
-            axs_temp.set_yticks([])
-        else:
-            axs_temp.set_yticks(np.arange(n))
+        axs_temp.set_yticks(yticks)
+        if n != 1:
             axs_temp.set_ylabel('Realisation')
         if xlims:
             if xlims[j]:
@@ -301,3 +307,51 @@ def stacked_credible_intervals(fits, params, true_params, prior_cis=None, xlims=
     
     plt.tight_layout()
     plt.show()
+
+def date_to_number(date_str, date_format='%d/%m/%Y'):
+    # Parse the date string into a datetime object
+    date_object = datetime.strptime(date_str, date_format)
+
+    # Define a reference date
+    reference_date = datetime(1900, 1, 1)
+    
+    # Calculate the difference in days between the date and the reference date
+    delta = date_object - reference_date
+    
+    # Return the number of days
+    return delta.days
+
+def interpolate_days(date_numbers_original):
+    date_numbers = date_numbers_original.astype('float64').copy()
+    current_number = date_numbers[0]
+    current_index = 0
+    count = 1
+    for i, number in enumerate(date_numbers[1:], start=1):
+        if number == current_number:
+            count += 1
+        else:
+            date_numbers[current_index: current_index+count] += np.arange(0, 1, 1/count)
+            current_number = number
+            current_index = i
+            count = 1
+            
+    if count > 1:
+        date_numbers[current_index: current_index+count] += np.arange(0, 1, 1/count)
+        
+    return date_numbers
+
+def process_csv_data(file_path):
+    # Load CSV as a dataframe
+    df = pd.read_csv(file_path)
+
+    # Convert dates to numbers
+    df['date_number'] = df['date'].apply(date_to_number)
+
+    # Subtract first date so that numbers start from 0
+    first_number = df['date_number'].iloc[0]
+    df['date_number'] = df['date_number'] - first_number
+
+    # For multiple events on the same day, spread them out evenly
+    date_numbers_interpolated = interpolate_days(df['date_number'].values)
+
+    return date_numbers_interpolated

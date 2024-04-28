@@ -144,7 +144,7 @@ def trace_plots(fits, params, warmup=None, chains=2, legend_height=-0.01):
     plt.tight_layout()
     plt.show()
     
-def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_height=-0.01):
+def posterior_histograms(fits, params, prior_functions=None, xlims=None, mles=None, legend_height=-0.01):
     n = len(fits)
     m = len(params)
     fig, axs = plt.subplots(nrows=n, ncols=m, figsize=(5*m, 3*n))
@@ -167,7 +167,7 @@ def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_
             axs_temp.set_xlabel('Value')
 
             credible_interval = stats.mstats.mquantiles(data, [0.025, 0.975])
-            axs_temp.axvspan(xmin=credible_interval[0], xmax=credible_interval[1], color='green', alpha=0.2, label='95% CI')
+            axs_temp.axvspan(xmin=credible_interval[0], xmax=credible_interval[1], color='green', alpha=0.2, label='95% CrI')
 
             max_x[j] = max(max_x[j], max(data))
             max_y[j] = max(max_y[j], max(hist))
@@ -190,6 +190,9 @@ def posterior_histograms(fits, params, prior_functions=None, xlims=None, legend_
                 x_values = np.linspace(0, max_x[j], 1000)  # Generate x values for prior function evaluation
                 prior_values = prior_functions[j](x_values)  # Evaluate prior density function
                 axs_temp.plot(x_values, prior_values, color='red', linestyle='--', label='Prior')
+            if mles is not None:
+                if mles[j]:
+                    axs_temp.axvline(mles[j], color='orange', linestyle='--', label='ML estimate')
                 
     handles, labels = get_axs_temp_2d(axs, 0, 0, n, m).get_legend_handles_labels()
     fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.52, legend_height), ncol=m)

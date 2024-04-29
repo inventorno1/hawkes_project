@@ -1,0 +1,87 @@
+method = sample (Default)
+  sample
+    num_samples = 750
+    num_warmup = 250
+    save_warmup = 1
+    thin = 1 (Default)
+    adapt
+      engaged = 1 (Default)
+      gamma = 0.05 (Default)
+      delta = 0.8 (Default)
+      kappa = 0.75 (Default)
+      t0 = 10 (Default)
+      init_buffer = 75 (Default)
+      term_buffer = 50 (Default)
+      window = 25 (Default)
+      save_metric = 0 (Default)
+    algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 10 (Default)
+        metric = diag_e (Default)
+        metric_file =  (Default)
+        stepsize = 1 (Default)
+        stepsize_jitter = 0 (Default)
+    num_chains = 2
+id = 1 (Default)
+data
+  file = C:\Users\ethan\AppData\Local\Temp\tmp3493fqb0\udpimqgf.json
+init = 0
+random
+  seed = 2963777707
+output
+  file = C:\Users\ethan\OneDrive - University of Bristol\Maths\Year 4\Project\hawkes_project\bayesian_clean\saved_fits\exponential_priors_delta_only\max_T=400\realisation6\exponential_priors_delta_only-20240422185858.csv
+  diagnostic_file =  (Default)
+  refresh = 100 (Default)
+  sig_figs = -1 (Default)
+  profile_file = profile.csv (Default)
+  save_cmdstan_config = 0 (Default)
+num_threads = 2 (Default)
+
+
+Gradient evaluation took 0.039323 seconds
+1000 transitions using 10 leapfrog steps per transition would take 393.23 seconds.
+Adjust your expectations accordingly!
+
+
+
+Gradient evaluation took 0.030714 seconds
+1000 transitions using 10 leapfrog steps per transition would take 307.14 seconds.
+Adjust your expectations accordingly!
+
+
+Chain [2] Iteration:   1 / 1000 [  0%]  (Warmup)
+Chain [1] Iteration:   1 / 1000 [  0%]  (Warmup)
+Chain [2] Iteration: 100 / 1000 [ 10%]  (Warmup)
+Chain [1] Iteration: 100 / 1000 [ 10%]  (Warmup)
+Chain [2] Iteration: 200 / 1000 [ 20%]  (Warmup)
+Chain [1] Iteration: 200 / 1000 [ 20%]  (Warmup)
+Chain [2] Iteration: 251 / 1000 [ 25%]  (Sampling)
+Chain [1] Iteration: 251 / 1000 [ 25%]  (Sampling)
+Chain [2] Iteration: 350 / 1000 [ 35%]  (Sampling)
+Chain [1] Iteration: 350 / 1000 [ 35%]  (Sampling)
+Chain [2] Iteration: 450 / 1000 [ 45%]  (Sampling)
+Chain [1] Iteration: 450 / 1000 [ 45%]  (Sampling)
+Chain [2] Iteration: 550 / 1000 [ 55%]  (Sampling)
+Chain [1] Iteration: 550 / 1000 [ 55%]  (Sampling)
+Chain [2] Iteration: 650 / 1000 [ 65%]  (Sampling)
+Chain [1] Iteration: 650 / 1000 [ 65%]  (Sampling)
+Chain [2] Iteration: 750 / 1000 [ 75%]  (Sampling)
+Chain [1] Iteration: 750 / 1000 [ 75%]  (Sampling)
+Chain [2] Iteration: 850 / 1000 [ 85%]  (Sampling)
+Chain [1] Iteration: 850 / 1000 [ 85%]  (Sampling)
+Chain [2] Iteration: 950 / 1000 [ 95%]  (Sampling)
+Chain [1] Iteration: 950 / 1000 [ 95%]  (Sampling)
+Chain [2] Iteration: 1000 / 1000 [100%]  (Sampling)
+
+ Elapsed Time: 53.713 seconds (Warm-up)
+               125.388 seconds (Sampling)
+               179.101 seconds (Total)
+
+Chain [1] Iteration: 1000 / 1000 [100%]  (Sampling)
+
+ Elapsed Time: 55.269 seconds (Warm-up)
+               128.539 seconds (Sampling)
+               183.808 seconds (Total)
+
